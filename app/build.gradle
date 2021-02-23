@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    implementation project(":commons")
+    compile "commons-cli:commons-cli:1.4"
+    compile "com.google.code.gson:gson:2.8.6"
+    compile "org.sql2o:sql2o:1.5.4"
+    compile "com.h2database:h2:1.4.200"
+    compile "org.flywaydb:flyway-core:7.2.0"
+    compile "com.vk.api:sdk:1.0.2"
+    compile "com.sparkjava:spark-core:2.9.3"
+}
+
+application {
+    mainClassName = "ru.e2d.user.manager.app.App"
+}

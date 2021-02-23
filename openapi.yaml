@@ -1,0 +1,430 @@
+openapi: "3.0.3"
+info:
+  title: REST API документация к сервису UserManager проекта Events2Dance
+  version: 0.1.0
+
+servers:
+  - url: http://localhost:8010
+    description: Локальный сервер разработки
+
+tags:
+  - name: Users
+  - name: Tokens
+  - name: Roles
+
+paths:
+  /users:
+    get:
+      summary: Список пользователий
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShortUsersRes"
+        default:
+          $ref: "#/components/responses/AnyError"
+    post:
+      summary: Регистрация пользователя
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/AnyError"
+  /users/{id}:
+    get:
+      summary: Подробная информация о пользователе
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/AnyError"
+    patch:
+      summary: Обновление данных пользователя
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/AnyError"
+    delete:
+      summary: Удалить пользователя безвозвратно
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ok
+        '404':
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/AnyError"
+  /users/{id}/roles/{roleId}:
+    put:
+      summary: Назначить роль пользователю
+      tags:
+        - Users
+        - Roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ok
+        default:
+          $ref: "#/components/responses/AnyError"
+    delete:
+      summary: Удалить роль пользователя
+      tags:
+        - Users
+        - Roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ok
+        default:
+          $ref: "#/components/responses/AnyError"
+  /roles:
+    get:
+      summary: Доступные роли
+      tags:
+        - Roles
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolesRes"
+        default:
+          $ref: "#/components/responses/AnyError"
+    post:
+      summary: Создать новую роль
+      tags:
+        - Roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewRole"
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RichRole"
+        default:
+          $ref: "#/components/responses/AnyError"
+  /roles/{id}:
+    get:
+      summary: Подробные данные роли
+      tags:
+        - Roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RichRole"
+        default:
+          $ref: "#/components/responses/AnyError"
+    put:
+      summary: Изменить информацию о роли
+      tags:
+        - Roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RichRole"
+        default:
+          $ref: "#/components/responses/AnyError"
+    delete:
+      summary: Удалить роль
+      tags:
+        - Roles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ok
+        default:
+          $ref: "#/components/responses/AnyError"
+  /tokens:
+    get:
+      summary: Список созданных токенов
+      tags:
+        - Tokens
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokensRes"
+    post:
+      summary: Создать токен (Авторизоваться)
+      tags:
+        - Tokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewTokenReq"
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+  /tokens/{token}:
+    get:
+      summary: Получить подробную информацию о токене
+      tags:
+        - Tokens
+      responses:
+        '204':
+          description: Ok
+        '404':
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Удалить токен
+      tags:
+        - Tokens
+      responses:
+        '204':
+          description: Ok
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+components:
+  responses:
+    AnyError:
+      description: Any error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - phone
+        - roles
+    NewUser:
+      type: object
+      properties:
+        phone:
+          type: string
+        name:
+          type: string
+    ShortUser:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+      required:
+        - id
+        - phone
+    ShortUsersRes:
+      type: object
+      properties:
+        count:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShortUser"
+      required:
+        - count
+        - data
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: admin
+      required:
+        - id
+        - name
+    NewRole:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Role/properties/name"
+    RichRole:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Role/properties/name"
+        id:
+          $ref: "#/components/schemas/Role/properties/id"
+        users:
+          type: integer
+          description: Кол-во пользователей этой роли
+    RolesRes:
+      type: object
+      properties:
+        count:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+      required:
+        - count
+        - data
+    Token:
+      type: string
+    NewTokenReq:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+7 123 123-12-12"
+        password:
+          type: string
+          minLength: 3
+          maxLength: 16
+          example: "myPassword"
+      required:
+        - phone
+        - password
+    TokensRes:
+      type: object
+      properties:
+        count:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Token"
+      required:
+        - count
+        - data
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message

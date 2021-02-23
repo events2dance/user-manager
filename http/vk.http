@@ -1,0 +1,21 @@
+GET /vk/authorize/params
+Host: {{host}}
+Accept: application/json
+Content-Type: application/json
+
+> {%
+ client.test("request status is 200", function () {
+   client.assert(response.status === 200, "Status is not 200!")
+   client.assert(response.body.clientSecret === undefined, "clientSecret is not undefined!")
+ })
+ %}
+
+###
+
+GET /vk/validate
+Host: {{host}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 846ad17ac901376ddc185653b424efa4497e722c08affe89397a9035d3881abd1fc3c6ef29492526b8192
+
+###
